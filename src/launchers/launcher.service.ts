@@ -7,19 +7,22 @@ export class LauncherService {
   constructor (@Inject('LAUNCHER_MODEL') private launcherModel: Model<Launcher>) {}
 
   async create (dataLauncher: Launcher): Promise<Launcher> {
+    if (!dataLauncher.imported_t) dataLauncher.imported_t = new Date()
+    if (!dataLauncher.status_) dataLauncher.status_ = 'published'
     return await this.launcherModel.create(dataLauncher)
   }
 
   async update (id: string, dataLauncher: Launcher): Promise<Launcher> {
-    return await this.launcherModel.findOneAndUpdate(
+    const launcher = await this.launcherModel.findOneAndUpdate(
       { id },
       { $set: { dataLauncher } },
       { new: true }
     ).exec()
+    return launcher
   }
 
-  async find () {
-    return await this.launcherModel.find().exec()
+  async find (limit?: number, offset?: number) {
+    return await this.launcherModel.find().limit(limit).skip(offset).sort({ _id: -1 }).exec()
   }
 
   async findById (id: string) {
@@ -27,6 +30,7 @@ export class LauncherService {
   }
 
   async remove (id: string) {
-    return await this.launcherModel.deleteOne({ id })
+    const remove = await this.launcherModel.deleteOne({ id })
+    return remove.deletedCount
   }
 }

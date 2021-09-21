@@ -14,20 +14,21 @@ export class CronService {
 
   @Cron('0 0 23 * * *')
   async updateDataSet () {
-    for (let offset = 0; offset <= 1900; offset += 0) {
+    const limit = 100
+
+    for (let offset = 0; offset <= 1900; offset += 100) {
       const bufferData = this.httpService
-        .get(`https://ll.thespacedevs.com/2.0.0/launch/?format=json&limit=100&offset=${offset}`)
+        .get(`https://ll.thespacedevs.com/2.0.0/launch/?format=json&${limit}=100&offset=${offset}`)
         .pipe()
 
       const launchers = await lastValueFrom(bufferData)
+      const launchersData = launchers.data
 
-      launchers.data.forEach(async (launcher: Launcher) => {
+      launchersData.forEach(async (launcher: Launcher) => {
         launcher.imported_t = new Date()
         launcher.status_ = 'published'
         await this.lancherService.update(launcher.id, launcher)
       })
-
-      offset += 100
     }
   }
 }

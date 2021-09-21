@@ -1,7 +1,7 @@
 import * as mongoose from 'mongoose'
 
 export const LauncherSchema = new mongoose.Schema({
-  id: String,
+  id: { type: String, required: true },
   url: String,
   launch_library_id: Number,
   slug: String,
@@ -77,6 +77,6 @@ export const LauncherSchema = new mongoose.Schema({
   image: String,
   infographic: String,
   program: [],
-  imported_t: Date,
-  status_: { type: String, enum: ['draft', 'trash', 'published'] }
+  imported_t: { type: Date, default: Date.now },
+  status_: { type: String, enum: ['draft', 'trash', 'published'], default: 'published' }
 })

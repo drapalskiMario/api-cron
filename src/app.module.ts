@@ -5,16 +5,20 @@ import { AppService } from './app.service'
 import { LauncherModule } from './launchers/launcher.module'
 import { ScheduleModule } from '@nestjs/schedule'
 import { CronModule } from './cronJobs/cron.module'
+import { UserModule } from './users/user.module'
+import { AuthModule } from './auth/auth.module'
 
 @Module({
   imports: [
     LauncherModule,
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({ isGlobal: true }),
     ScheduleModule.forRoot(),
-    CronModule
+    CronModule,
+    UserModule,
+    AuthModule
   ],
   controllers: [AppController],
 
   providers: [AppService]
 })
-export class AppModule {}
+export class AppModule { }
