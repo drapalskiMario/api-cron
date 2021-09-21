@@ -10,5 +10,6 @@ export const badRequestException = () => (
 
 export const responses = {
   serverError: 'Internal server error',
-  notFoundById: 'launcher by this id not found'
+  notFoundById: 'launcher by this id not found',
+  unauthorized: 'Unauthorized'
 }

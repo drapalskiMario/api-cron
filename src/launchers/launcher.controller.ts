@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Param, Post, Put, Delete, UseGuards, HttpCode, HttpException, Query } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
-import { ApiBearerAuth, ApiCreatedResponse, ApiInternalServerErrorResponse, ApiNoContentResponse, ApiNotFoundResponse, ApiOkResponse, ApiQuery, ApiTags } from '@nestjs/swagger'
+import { ApiBearerAuth, ApiCreatedResponse, ApiInternalServerErrorResponse, ApiNoContentResponse, ApiNotFoundResponse, ApiOkResponse, ApiQuery, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger'
 import { Launcher } from './entities/Launcher.entity'
 import { notFoundException, responses } from '../helpers/controller-helper'
 import { LauncherService } from './launcher.service'
@@ -15,6 +15,7 @@ export class LauncherController {
   @ApiBearerAuth('jwt-token')
   @ApiCreatedResponse()
   @ApiInternalServerErrorResponse({ description: responses.serverError })
+  @ApiUnauthorizedResponse({ description: responses.unauthorized })
   @Post()
   async create (@Body() body: Launcher) {
     return await this.launcherService.create(body)
@@ -23,6 +24,7 @@ export class LauncherController {
   @ApiBearerAuth('jwt-token')
   @ApiOkResponse({ type: LauncherSwagger, isArray: true })
   @ApiInternalServerErrorResponse({ description: responses.serverError })
+  @ApiUnauthorizedResponse({ description: responses.unauthorized })
   @ApiQuery({ name: 'limit', required: false, example: 10 })
   @ApiQuery({ name: 'offset', required: false, example: 0 })
   @Get()
@@ -33,6 +35,7 @@ export class LauncherController {
   @ApiBearerAuth('jwt-token')
   @ApiOkResponse({ type: LauncherSwagger })
   @ApiInternalServerErrorResponse({ description: responses.serverError })
+  @ApiUnauthorizedResponse({ description: responses.unauthorized })
   @ApiNotFoundResponse({ description: responses.notFoundById })
   @Get(':id')
   async findOne (@Param('id') id: string): Promise<Launcher | HttpException> {
@@ -47,6 +50,7 @@ export class LauncherController {
   @ApiOkResponse({ type: LauncherSwagger })
   @ApiInternalServerErrorResponse({ description: responses.serverError })
   @ApiNotFoundResponse({ description: responses.notFoundById })
+  @ApiUnauthorizedResponse({ description: responses.unauthorized })
   @Put(':id')
   async update (@Param('id') id: string, @Body() body: Launcher): Promise<Launcher | HttpException> {
     const launcher = await this.launcherService.update(id, body)
@@ -60,6 +64,7 @@ export class LauncherController {
   @ApiNoContentResponse()
   @ApiInternalServerErrorResponse({ description: responses.serverError })
   @ApiNotFoundResponse({ description: responses.notFoundById })
+  @ApiUnauthorizedResponse({ description: responses.unauthorized })
   @HttpCode(204)
   @Delete(':id')
   async delete (@Param('id') id: string): Promise<void | HttpException> {
